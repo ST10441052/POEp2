@@ -1,75 +1,95 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class EasyKanbanApp {
-    private List<Task> tasks;
+    private Task[] tasks;
+    private int taskCount;
+    private ShowReport showReport;
 
     public EasyKanbanApp() {
-        this.tasks = new ArrayList<>();
+        this.tasks = new Task[100]; // Assuming a maximum of 100 tasks
+        this.taskCount = 0;
+        this.showReport = new ShowReport(tasks, taskCount);
     }
 
     public void run() {
         boolean exit = false;
 
         while (!exit) {
-            String[] options = {"Add tasks", "Show report", "Quit"};
+            String[] options = {"Add tasks", "Show report", "Display Done Tasks", "Task with Longest Duration", "Search by Task Name", "Search by Developer", "Delete Task", "Quit"};
             int choice = JOptionPane.showOptionDialog(null, "Choose an option:", "EasyKanban",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, 
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                     null, options, options[0]);
 
             switch (choice) {
                 case 0:
-                    String numTasksStr = JOptionPane.showInputDialog("How many tasks would you like to enter?");
-                    int numberOfTasks = Integer.parseInt(numTasksStr);
-
-                    for (int i = 0; i < numberOfTasks; i++) {
-                        String taskName = JOptionPane.showInputDialog("Enter task name:");
-
-                        String taskDescription;
-                        do {
-                            taskDescription = JOptionPane.showInputDialog("Enter task description (max 50 characters):");
-                            if (!Task.checkTaskDescription(taskDescription)) {
-                                JOptionPane.showMessageDialog(null, "Please enter a task description of less than 50 characters");
-                            }
-                        } while (!Task.checkTaskDescription(taskDescription));
-
-                        String developerDetails = JOptionPane.showInputDialog("Enter developer first and last name:");
-
-                        String taskDurationStr = JOptionPane.showInputDialog("Enter task duration in hours:");
-                        double taskDuration = Double.parseDouble(taskDurationStr);
-
-                        String[] statusOptions = {"To Do", "Doing", "Done"};
-                        int statusChoice = showStatusOptionDialog();
-                        String taskStatus = statusOptions[statusChoice];
-
-                        Task newTask = new Task(taskName, taskDescription, developerDetails, taskDuration, i, taskStatus);
-                        tasks.add(newTask);
-
-                        // Display task details using JOptionPane
-                        JOptionPane.showMessageDialog(null, newTask.printTaskDetails());
-
-                        JOptionPane.showMessageDialog(null, "Task successfully captured");
-                    }
-
-                    // Display total hours
-                    int totalHours = Task.returnTotalHours(tasks);
-                    JOptionPane.showMessageDialog(null, "Total hours for all tasks: " + totalHours);
+                    addTasks();
                     break;
-
                 case 1:
-                    JOptionPane.showMessageDialog(null, "Coming Soon");
+                    showReport.showReport();
                     break;
-
                 case 2:
+                    showReport.displayDoneTasks();
+                    break;
+                case 3:
+                    showReport.displayLongestDurationTask();
+                    break;
+                case 4:
+                    showReport.searchByTaskName();
+                    break;
+                case 5:
+                    showReport.searchByDeveloper();
+                    break;
+                case 6:
+                    showReport.deleteTask();
+                    break;
+                case 7:
                     exit = true;
                     break;
-
                 default:
                     JOptionPane.showMessageDialog(null, "Invalid option. Please try again.");
             }
         }
+    }
+
+    private void addTasks() {
+        String numTasksStr = JOptionPane.showInputDialog("How many tasks would you like to enter?");
+        int numberOfTasks = Integer.parseInt(numTasksStr);
+
+        for (int i = 0; i < numberOfTasks; i++) {
+            String taskName = JOptionPane.showInputDialog("Enter task name:");
+
+            String taskDescription;
+            do {
+                taskDescription = JOptionPane.showInputDialog("Enter task description (max 50 characters):");
+                if (!Task.checkTaskDescription(taskDescription)) {
+                    JOptionPane.showMessageDialog(null, "Please enter a task description of less than 50 characters");
+                }
+            } while (!Task.checkTaskDescription(taskDescription));
+
+            String developerDetails = JOptionPane.showInputDialog("Enter developer first and last name:");
+
+            String taskDurationStr = JOptionPane.showInputDialog("Enter task duration in hours:");
+            double taskDuration = Double.parseDouble(taskDurationStr);
+
+            String[] statusOptions = {"To Do", "Doing", "Done"};
+            int statusChoice = showStatusOptionDialog();
+            String status = statusOptions[statusChoice];
+
+            Task newTask = new Task(taskName, taskDescription, developerDetails, taskDuration, taskCount + 1, status);
+            tasks[taskCount] = newTask;
+            taskCount++;
+
+            // Display task details using JOptionPane
+            JOptionPane.showMessageDialog(null, newTask.printTaskDetails());
+
+            JOptionPane.showMessageDialog(null, "Task successfully captured");
+        }
+
+        // Display total hours
+        int totalHours = Task.returnTotalHours(tasks, taskCount);
+        JOptionPane.showMessageDialog(null, "Total hours for all tasks: " + totalHours);
     }
 
     private int showStatusOptionDialog() {
@@ -99,4 +119,3 @@ public class EasyKanbanApp {
         kanbanApp.run();
     }
 }
-

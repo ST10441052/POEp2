@@ -76,4 +76,9 @@ public class Task {
     public String getTaskID() {
         return taskID;
     }
+
+    public static int returnTotalHours(Task[] tasks, int taskCount) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'returnTotalHours'");
+    }
 }

@@ -1,15 +1,15 @@
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 public class TaskTest {
     private Task task1;
     private Task task2;
-    private List<Task> tasks;
-
+    private Task[] tasks;
     
-
+      //this is the poep2 unit tests
     @Test
     public void testTaskDescription() {
         assertTrue(Task.checkTaskDescription(task1.getTaskDescription()));
@@ -49,3 +49,41 @@ public class TaskTest {
         assertEquals(18, Task.returnTotalHours(tasks));
     }
 }
+
+
+// this is the poe p3 unit tests
+
+@Test
+public void testDeveloperEntriesForTasks() {
+    
+    String[] expectedDevelopers = {"Mike Smith", "Edward Harrington", "Samantha Paulson", "Genda Oberhozer"};
+    
+   
+    for (int taskId = 1; taskId <= expectedDevelopers.length; taskId++) {
+        String expectedDeveloper = expectedDevelopers[taskId - 1];
+        String actualDeveloper = getDeveloperNameForTask(taskId);
+        assertEquals(expectedDeveloper, actualDeveloper, "The developer for task " + taskId + " should be " + expectedDeveloper);
+    }
+}
+
+
+@Test
+public void testDisplayDeveloperAndDurationForLongestTask() {
+    
+    
+    String expected = "Genda Oberhozer , 11";
+    String actual = getDeveloperAndDurationForLongestTask();
+
+    assertEquals(expected, actual, "The developer and duration for the task with the longest duration should be 'Genda Oberhozer , 11'");
+}
+
+@Test
+public void testSearchForTasks() {
+   
+    String taskName = "create login";
+    String expected = "Mike Smith , create login";
+    String actual = searchForTasks(taskName);
+
+    assertEquals(expected, actual, "Searching for 'create login' should return 'Mike Smith , create login'");
+}
+
